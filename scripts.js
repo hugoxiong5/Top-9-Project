@@ -1,5 +1,5 @@
 const apiKey = '5d576382955ff5829fc3844390db4427';
-const baseAPIUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc`;
+const baseAPIUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}`;
 var localData = {};
 
 $(function () {
@@ -30,7 +30,7 @@ function afterGoClicked() {
   Check out examples query params at https://www.themoviedb.org/documentation/api/discover
 */
 function buildQueryString(genre, language, year){
-  return `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_genres=${genre}&primary_release_year=${year}&with_original_language=${language}&sort_by=revenue.desc`;
+  return `${baseAPIUrl}&with_genres=${genre}&primary_release_year=${year}&with_original_language=${language}&sort_by=revenue.desc`;
 }
 
 // Call this function with the data object that comes back from getJSON
@@ -54,51 +54,45 @@ function afterDataLoaded(dataObject){
     if (i < localData.results.length) {
       document.getElementById("movieImg" + i).src = "https://image.tmdb.org/t/p/w500" + localData.results[i].poster_path;
     } else {
-      document.getElementById("movieImg" + i).src = "http://www.kevingage.com/assets/clapboard.png"
-      document.getElementById("movieImg" + i).height = "382";
+      document.getElementById("movieImg" + i).src = "https://images.unsplash.com/photo-1526376043067-5af36c35cd6c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=aed342eea1c8593563be90e10c423dfe&w=1000&q=80"
     }
   }
 }
 
-//  Filter Clicked/Chosen
-// click on a radio button, calls a function
+//  Filter Options Clicked/Chosen
+// click on a radio button (in the Sidenav), calls a function
 $(function () {
   // After the DOM has loaded, call afterFilterClicked after any time a button is clicked in the Side Nav bar
   $('.sidenav').on('click', afterFilterClicked);
 })
 
 function afterFilterClicked() {
-// Find out of the values of the filters
-var sort = $("input[type='radio'][name='filter']:checked").val();
-
-// Most Popular Filter
-if (sort === 'mostP') {
-localData.results.sort(function(a, b){
-  return b.popularity - a.popularity;
-});
-}
-
-// Least Popular Filter
-if (sort === 'leastP') {
-  localData.results.sort(function(a, b){
+  // Find out the value of the selected filter and store to variable
+  var sort = $("input[type='radio'][name='filter']:checked").val();
+  // Most Popular Filter
+  if (sort === 'mostP') {
+    localData.results.sort(function(a, b){
+    return b.popularity - a.popularity;
+    });
+  }
+  // Least Popular Filter
+  if (sort === 'leastP') {
+    localData.results.sort(function(a, b){
     return a.popularity - b.popularity;
-  });
-}
-
+    });
+  }
 // Most Acclaimed Filter
-if (sort === 'mostA') {
-  localData.results.sort(function(a, b){
+  if (sort === 'mostA') {
+    localData.results.sort(function(a, b){
     return b.vote_average - a.vote_average;
-  });
+    });
   }
-
 // Least Acclaimed Filter
-if (sort === 'leastA') {
-  localData.results.sort(function(a, b){
-    return a.vote_average - b.vote_average;
-  });
+  if (sort === 'leastA') {
+    localData.results.sort(function(a, b){
+      return a.vote_average - b.vote_average;
+    });
   }
-
-// Filter Results and Change Posters by calling afterDataLoaded function
+  // Filter Results and Change Posters by calling afterDataLoaded function
   afterDataLoaded(localData);
 }
